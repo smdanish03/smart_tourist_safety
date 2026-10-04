@@ -82,13 +82,13 @@ class _AdminLoginPageState
 
       if (!mounted) return;
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) =>
-              const AdminDashboard(),
-        ),
-      );
+ Navigator.pushAndRemoveUntil(
+  context,
+  MaterialPageRoute(
+    builder: (_) => const AdminDashboard(),
+  ),
+  (route) => false,
+);
     } on FirebaseAuthException catch (error) {
       String message =
           'Admin login failed.';

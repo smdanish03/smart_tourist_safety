@@ -40,9 +40,11 @@ class FoodPlace {
 }
 
 class FoodService {
-  static const String _overpassUrl =
-      'https://overpass-api.de/api/interpreter';
-
+static const List<String> _overpassEndpoints = [
+  'https://overpass.private.coffee/api/interpreter',
+  'https://overpass-api.de/api/interpreter',
+  'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
+];
   Future<List<FoodPlace>> getNearbyFood({
     required double latitude,
     required double longitude,
@@ -59,7 +61,11 @@ class FoodService {
 out center tags;
 ''';
 
-    final Uri uri = Uri.parse(_overpassUrl).replace(
+  http.Response? successfulResponse;
+
+for (final String endpoint in _overpassEndpoints) {
+  try {
+    final Uri uri = Uri.parse(endpoint).replace(
       queryParameters: <String, String>{
         'data': query,
       },
@@ -69,16 +75,30 @@ out center tags;
       uri,
       headers: const <String, String>{
         'Accept': 'application/json',
+        'User-Agent': 'SmartTouristSafety/1.0',
       },
+    ).timeout(
+      const Duration(seconds: 40),
     );
 
-    if (response.statusCode != 200) {
-      throw Exception(
-        'Unable to load nearby food places. '
-        'Server returned ${response.statusCode}.',
-      );
+    if (response.statusCode == 200 &&
+        response.body.trim().isNotEmpty) {
+      successfulResponse = response;
+      break;
     }
+  } catch (_) {
+    // Try the next Overpass server.
+  }
+}
 
+if (successfulResponse == null) {
+  throw Exception(
+    'Unable to load nearby food places. '
+    'Please try again in a moment.',
+  );
+}
+
+final http.Response response = successfulResponse;
     final dynamic decoded = jsonDecode(response.body);
 
     if (decoded is! Map<String, dynamic>) {

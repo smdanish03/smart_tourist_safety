@@ -39,10 +39,11 @@ class PoliceStationService {
 out center tags;
 ''';
 
-    final List<String> endpoints = [
-      'https://overpass-api.de/api/interpreter',
-      'https://overpass.kumi.systems/api/interpreter',
-    ];
+  final List<String> endpoints = [
+  'https://overpass.private.coffee/api/interpreter',
+  'https://overpass-api.de/api/interpreter',
+  'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
+];
 
     http.Response? successfulResponse;
 
@@ -54,11 +55,13 @@ out center tags;
             await http
                 .post(
                   url,
-                  headers: {
-                    'Content-Type':
-                        'application/x-www-form-urlencoded',
-                    'Accept': 'application/json',
-                  },
+                 headers: {
+  'Content-Type':
+      'application/x-www-form-urlencoded',
+  'Accept': 'application/json',
+  'User-Agent':
+      'SmartTouristSafety/1.0',
+},
                   body: {
                     'data': query,
                   },

@@ -21,10 +21,11 @@ class HospitalService {
   final LocationService _locationService =
       LocationService();
 
-  static const List<String> _overpassEndpoints = [
-    'https://overpass-api.de/api/interpreter',
-    'https://overpass.kumi.systems/api/interpreter',
-  ];
+static const List<String> _overpassEndpoints = [
+  'https://overpass.private.coffee/api/interpreter',
+  'https://overpass-api.de/api/interpreter',
+  'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
+];
 
   Future<List<NearbyHospital>> getNearbyHospitals({
     double radiusKm = 15,
@@ -94,11 +95,13 @@ out center tags;
         await http
             .post(
               url,
-              headers: const {
-                'Content-Type':
-                    'application/x-www-form-urlencoded',
-                'Accept': 'application/json',
-              },
+           headers: const {
+  'Content-Type':
+      'application/x-www-form-urlencoded',
+  'Accept': 'application/json',
+  'User-Agent':
+      'SmartTouristSafety/1.0',
+},
               body: {
                 'data': query,
               },
