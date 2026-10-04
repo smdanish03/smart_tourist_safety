@@ -364,6 +364,9 @@ class _PlaceDetailsPageState extends State<PlaceDetailsPage> {
     // CONFIRM VISIT
     // ----------------------------------------------------------
 
+    if (!mounted) {
+  return;
+}
     final bool? confirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
